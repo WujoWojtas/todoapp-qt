@@ -1,5 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "QJsonObject";
+#include "QJsonDocument";
+#include "QJsonArray";
+#include "QFileDialog";
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -29,4 +33,30 @@ void MainWindow::on_pushButton_2_clicked()
         QListWidgetItem* item = selectedItems.at(i);
         delete item;
     }
+}
+
+void MainWindow::on_exportJson_clicked()
+{
+    QJsonArray jsonArray;
+
+    QList<QListWidgetItem*> items = ui->listWidget->findItems(QString("*"), Qt::MatchWrap | Qt::MatchWildcard);
+    foreach (QListWidgetItem* item, items)
+    {
+        QJsonObject jsonItem;
+        jsonItem["Value"] = item->text();
+        jsonArray.append(jsonItem);
+    }
+    QJsonDocument doc(jsonArray);
+    QString resultJSON(doc.toJson(QJsonDocument::Indented));
+
+    QString filename = QFileDialog::getSaveFileName();
+    QFile f( filename );
+    f.open( QIODevice::WriteOnly );
+    f.write(resultJSON.toUtf8().constData());
+    f.close();
+}
+
+void MainWindow::on_loadJson_clicked()
+{
+
 }

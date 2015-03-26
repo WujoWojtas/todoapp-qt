@@ -24,8 +24,19 @@ private slots:
 
     void on_loadJson_clicked();
 
+    void on_clearAll_clicked();
+
 private:
+    QString settingsFile;
+    QString settingsKey;
+
     Ui::MainWindow *ui;
+    void loadItemsFromSettings();
+    void saveItemsToSettings();
+    QString getJson();
+    void loadJson(QString data);
+
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif // MAINWINDOW_H

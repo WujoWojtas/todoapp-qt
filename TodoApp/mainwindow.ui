@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>401</width>
-    <height>283</height>
+    <width>421</width>
+    <height>291</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Todo App</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>0</y>
       <width>401</width>
       <height>241</height>
@@ -43,6 +43,13 @@
         <widget class="QPushButton" name="pushButton_2">
          <property name="text">
           <string>Delete selected</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="clearAll">
+         <property name="text">
+          <string>Clear all</string>
          </property>
         </widget>
        </item>
@@ -74,7 +81,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>401</width>
+     <width>421</width>
      <height>21</height>
     </rect>
    </property>

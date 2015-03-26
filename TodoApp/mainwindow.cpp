@@ -58,5 +58,19 @@ void MainWindow::on_exportJson_clicked()
 
 void MainWindow::on_loadJson_clicked()
 {
+    QString filename = QFileDialog::getOpenFileName();
+    QFile f( filename );
+    f.open( QIODevice::ReadOnly );
+    QString textJSON(f.readAll());
+    f.close();
 
+    QJsonDocument JSONdocument = QJsonDocument::fromJson(textJSON.toUtf8());
+    QJsonArray jsonArray = JSONdocument.array();
+
+    foreach (QJsonValue jsonValue, jsonArray) {
+        QJsonObject jsonObject = jsonValue.toObject();
+        ui->listWidget->addItem(jsonObject["Value"].toString());
+    }
+
+    //ui->listWidget->addItem(textJSON);
 }

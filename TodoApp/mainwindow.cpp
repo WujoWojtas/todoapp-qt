@@ -11,6 +11,14 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    initialize();
+}
+
+void MainWindow::initialize()
+{
+    this->settingsPath = QApplication::applicationDirPath().left(1) + ":/ToDoApp";
+    this->settingsKey = "data";
+
     ui->setupUi(this);
     this->loadItemsFromSettings();
 }
@@ -26,35 +34,17 @@ void MainWindow::closeEvent(QCloseEvent *event){
 }
 
 void MainWindow::loadItemsFromSettings(){
-QSettings settings(QApplication::applicationDirPath().left(1) + ":/ToDoApp");
-    if(settings.contains("data")){
-        QString itemsJson = settings.value("data").toString();
+    QSettings settings(this->settingsPath);
+    if(settings.contains(this->settingsKey)){
+        QString itemsJson = settings.value(this->settingsKey).toString();
         this->loadJson(itemsJson);
     }
 }
 
 void MainWindow::saveItemsToSettings(){
-    QSettings settings(QApplication::applicationDirPath().left(1) + ":/ToDoApp");
+    QSettings settings(this->settingsPath);
     QString jsonText = this->getJson();
-    settings.setValue("data", jsonText);
-}
-
-void MainWindow::on_pushButton_clicked()
-{
-    QString text = ui->lineEdit->text();
-    if(!text.isEmpty()){
-        ui->listWidget->addItem(text);
-        ui->lineEdit->clear();
-    }
-}
-
-void MainWindow::on_pushButton_2_clicked()
-{
-    QList<QListWidgetItem*> selectedItems = ui->listWidget->selectedItems();
-    for(int i=0; i<selectedItems.length(); i++){
-        QListWidgetItem* item = selectedItems.at(i);
-        delete item;
-    }
+    settings.setValue(this->settingsKey, jsonText);
 }
 
 QString MainWindow::getJson(){
@@ -71,6 +61,35 @@ QString MainWindow::getJson(){
     return doc.toJson(QJsonDocument::Indented);
 }
 
+void MainWindow::loadJson(QString data){
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(data.toUtf8());
+    QJsonArray jsonArray = jsonDocument.array();
+
+    foreach (QJsonValue jsonValue, jsonArray) {
+        QJsonObject jsonObject = jsonValue.toObject();
+        ui->listWidget->addItem(jsonObject["Value"].toString());
+    }
+}
+
+void MainWindow::on_pushButton_clicked() //add new item
+{
+    QString text = ui->lineEdit->text();
+    if(!text.isEmpty()){
+        ui->listWidget->addItem(text);
+        ui->lineEdit->clear();
+    }
+}
+
+void MainWindow::on_pushButton_2_clicked() //delete selected
+{
+    QList<QListWidgetItem*> selectedItems = ui->listWidget->selectedItems();
+    int length = selectedItems.length();
+    for(int i=0; i<length; i++){
+        QListWidgetItem* item = selectedItems.at(i);
+        delete item;
+    }
+}
+
 void MainWindow::on_exportJson_clicked()
 {
     QString resultJSON = this->getJson();
@@ -80,16 +99,6 @@ void MainWindow::on_exportJson_clicked()
     f.open( QIODevice::WriteOnly );
     f.write(resultJSON.toUtf8().constData());
     f.close();
-}
-
-void MainWindow::loadJson(QString data){
-    QJsonDocument JSONdocument = QJsonDocument::fromJson(data.toUtf8());
-    QJsonArray jsonArray = JSONdocument.array();
-
-    foreach (QJsonValue jsonValue, jsonArray) {
-        QJsonObject jsonObject = jsonValue.toObject();
-        ui->listWidget->addItem(jsonObject["Value"].toString());
-    }
 }
 
 void MainWindow::on_loadJson_clicked()

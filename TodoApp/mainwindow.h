@@ -27,10 +27,11 @@ private slots:
     void on_clearAll_clicked();
 
 private:
-    QString settingsFile;
+    QString settingsPath;
     QString settingsKey;
 
-    Ui::MainWindow *ui;
+    Ui::MainWindow *ui;    
+    void initialize();
     void loadItemsFromSettings();
     void saveItemsToSettings();
     QString getJson();
